@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chess - (Project by Netraa) | 2 Players • vs Robot • Online Share Link</title>
+  <meta name="description"
+    content="Play Chess online with 3 game modes: 2 players pass & play, vs intelligent robot AI, or play online via instant shareable link.">
+  <link rel="stylesheet" href="css/board.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">♟️</div>
+      <div>
+        <div class="brand-title">Chess <span
+            style="font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); opacity: 0.9;">- (Project by
+            Netraa)</span></div>
+      </div>
+      <span class="brand-badge">Pro</span>
+    </div>
+
+    <div class="header-actions">
+      <button id="btnSound" class="btn-icon" title="Toggle Sound">🔊</button>
+      <button id="btnTheme" class="btn-icon" title="Switch Board Theme">🎨</button>
+    </div>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="app-container">
+
+    <!-- Left Column: Board & Players -->
+    <div class="board-column">
+
+      <!-- Top Player Card -->
+      <div id="topPlayerCard" class="player-card">
+        <div class="player-info">
+          <div class="player-avatar" id="topPlayerAvatar">🤖</div>
+          <div class="player-details">
+            <div class="player-name-row">
+              <span id="topPlayerName" class="player-name">Black (Player 2)</span>
+              <span id="topPlayerRole" class="player-role-badge">Black</span>
+            </div>
+            <div id="topCaptured" class="captured-tray"></div>
+          </div>
+        </div>
+        <div id="topPlayerClock" class="player-clock">10:00</div>
+      </div>
+
+      <!-- Interactive Chessboard -->
+      <div id="boardWrapper" class="chess-board-wrapper theme-walnut">
+        <!-- Rendered dynamically by ChessUI -->
+      </div>
+
+      <!-- Bottom Player Card -->
+      <div id="bottomPlayerCard" class="player-card active-turn">
+        <div class="player-info">
+          <div class="player-avatar" id="bottomPlayerAvatar">👤</div>
+          <div class="player-details">
+            <div class="player-name-row">
+              <span id="bottomPlayerName" class="player-name">White (Player 1)</span>
+              <span id="bottomPlayerRole" class="player-role-badge">White</span>
+            </div>
+            <div id="bottomCaptured" class="captured-tray"></div>
+          </div>
+        </div>
+        <div id="bottomPlayerClock" class="player-clock">10:00</div>
+      </div>
+
+      <!-- Board Status Bar -->
+      <div class="board-status-bar">
+        <div class="status-indicator">
+          <div id="statusDot" class="status-dot"></div>
+          <span id="statusText">White's turn to move.</span>
+        </div>
+      </div>
+
+      <!-- In-game Action Toolbar -->
+      <div class="board-toolbar">
+        <button id="btnUndo" class="btn-control" title="Undo Last Move">
+          <span>↩️</span> Undo
+        </button>
+        <button id="btnFlip" class="btn-control" title="Flip Board Orientation">
+          <span>🔄</span> Flip
+        </button>
+        <button id="btnDraw" class="btn-control" title="Offer a Draw">
+          <span>🤝</span> Draw
+        </button>
+        <button id="btnResign" class="btn-control" title="Resign Current Game">
+          <span>🏳️</span> Resign
+        </button>
+        <button id="btnNewGame" class="btn-control" title="Start a New Game">
+          <span>⚡</span> New Game
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Game Modes & Info -->
+    <div class="sidebar-column">
+
+      <!-- 3 Primary Game Modes (Top Requirement) -->
+      <div class="mode-tabs-card">
+        <div class="mode-tabs-list">
+          <button class="mode-tab-btn active" data-mode="local">
+            <span class="tab-icon">👥</span>
+            <span>2 Players</span>
+          </button>
+          <button class="mode-tab-btn" data-mode="robot">
+            <span class="tab-icon">🤖</span>
+            <span>vs Robot</span>
+          </button>
+          <button class="mode-tab-btn" data-mode="online">
+            <span class="tab-icon">🔗</span>
+            <span>Play Online</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel 1: 2 Players (Pass & Play) -->
+      <div class="mode-panel active" data-panel="local">
+        <div class="panel-header">
+          <div class="panel-title">2 Players (Pass & Play)</div>
+          <div class="panel-subtitle">Play side-by-side on this device or screen.</div>
+        </div>
+
+        <div class="local-options">
+          <div class="option-group">
+            <span class="option-label">Time Control</span>
+            <div class="pills-group">
+              <button class="pill-choice-btn" data-local-time="0">Casual</button>
+              <button class="pill-choice-btn" data-local-time="3">3 min</button>
+              <button class="pill-choice-btn" data-local-time="5">5 min</button>
+              <button class="pill-choice-btn active" data-local-time="10">10 min</button>
+              <button class="pill-choice-btn" data-local-time="15">15 min</button>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <span class="option-label">Orientation Setting</span>
+            <div class="pills-group">
+              <button id="btnToggleAutoFlip" class="pill-choice-btn">Auto-Flip on Turn</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2: vs Robot (Computer AI) -->
+      <div class="mode-panel" data-panel="robot">
+        <div class="panel-header">
+          <div class="panel-title">Play with Robot AI</div>
+          <div class="panel-subtitle">Challenge the computer engine with 3 difficulty tiers.</div>
+        </div>
+
+        <div class="robot-options">
+          <div class="option-group">
+            <span class="option-label">Difficulty Level</span>
+            <div class="pills-group">
+              <button class="pill-choice-btn" data-bot-diff="easy">Beginner (800)</button>
+              <button class="pill-choice-btn active" data-bot-diff="medium">Club (1400)</button>
+              <button class="pill-choice-btn" data-bot-diff="hard">Master (1900+)</button>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <span class="option-label">Play As</span>
+            <div class="pills-group">
+              <button class="pill-choice-btn active" data-bot-color="w">White (1st)</button>
+              <button class="pill-choice-btn" data-bot-color="b">Black (2nd)</button>
+              <button class="pill-choice-btn" data-bot-color="random">Random</button>
+            </div>
+          </div>
+
+          <!-- Robot Thinking Banner -->
+          <div id="robotThinking" class="robot-thinking-banner">
+            <div class="robot-spin">⚙️</div>
+            <div id="robotComment">Robot is calculating best move...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 3: Play Online via Share Link -->
+      <div class="mode-panel" data-panel="online">
+        <div class="panel-header">
+          <div class="panel-title">Play Online (Share Link)</div>
+          <div class="panel-subtitle">Create a room and share the link with a friend to play instantly.</div>
+        </div>
+
+        <div class="online-options">
+
+          <!-- Create Room Form -->
+          <div id="onlineCreateBox" class="online-create-card">
+            <div class="option-group">
+              <span class="option-label">Time Control</span>
+              <div class="pills-group">
+                <button class="pill-choice-btn" data-online-time="0">Casual</button>
+                <button class="pill-choice-btn" data-online-time="3">3 min</button>
+                <button class="pill-choice-btn" data-online-time="5">5 min</button>
+                <button class="pill-choice-btn active" data-online-time="10">10 min</button>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Your Preferred Color</span>
+              <div class="pills-group">
+                <button class="pill-choice-btn active" data-online-color="random">Random</button>
+                <button class="pill-choice-btn" data-online-color="white">White</button>
+                <button class="pill-choice-btn" data-online-color="black">Black</button>
+              </div>
+            </div>
+
+            <button id="btnCreateRoom" class="btn-primary">
+              <span>🚀</span> Create Game Room & Link
+            </button>
+          </div>
+
+          <!-- Active Room & Share Box (shown after room created or joined) -->
+          <div id="onlineActiveBox" class="online-room-active" style="display: none;">
+            <div class="option-group">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="option-label">Room Code</span>
+                <span id="roomCodeBadge" class="brand-badge">------</span>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Shareable Game Link</span>
+              <div class="share-link-box">
+                <input id="shareLinkInput" class="input-share-link" type="text" readonly value="">
+                <button id="btnCopyLink" class="btn-primary btn-copy" title="Copy link to clipboard">
+                  <span>📋</span> Copy
+                </button>
+              </div>
+            </div>
+
+            <!-- QR Code for Instant Mobile Join -->
+            <div class="qr-container">
+              <canvas id="qrCanvas" class="qr-canvas"></canvas>
+              <span class="qr-label">Scan with Phone to Play</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- In-Game Live Chat (Online Mode) -->
+      <div id="chatCard" class="chat-card" style="display: none;">
+        <div class="chat-header">
+          <span>💬 Live In-Game Chat</span>
+          <span style="font-size: 0.75rem; color: #10b981;">● Active</span>
+        </div>
+        <div id="chatMessages" class="chat-messages">
+          <div class="chat-msg system">Room chat ready. Send a message or reaction!</div>
+        </div>
+        <div class="quick-reactions-row">
+          <button class="reaction-btn" title="Fire">🔥</button>
+          <button class="reaction-btn" title="Clap">👏</button>
+          <button class="reaction-btn" title="Big Brain">🧠</button>
+          <button class="reaction-btn" title="Surprised">😮</button>
+          <button class="reaction-btn" title="Pawn">♟️</button>
+          <button class="reaction-btn" title="Crown">👑</button>
+        </div>
+        <div class="chat-input-row">
+          <input id="chatInput" class="chat-input" type="text" placeholder="Type a message..." maxlength="140">
+          <button id="btnSendChat" class="btn-primary" style="padding: 6px 12px; font-size: 0.8rem;">Send</button>
+        </div>
+      </div>
+
+      <!-- Move History Notation Card -->
+      <div class="history-card">
+        <div class="history-header">
+          <span>📜 Move History</span>
+          <div style="display: flex; gap: 6px;">
+            <button id="btnCopyFEN" class="btn-control" style="padding: 2px 8px; font-size: 0.72rem;"
+              title="Copy FEN to clipboard">📋 FEN</button>
+            <button id="btnExportPGN" class="btn-control" style="padding: 2px 8px; font-size: 0.72rem;"
+              title="Download PGN notation file">📥 PGN</button>
+          </div>
+        </div>
+        <div id="movesList" class="history-moves-list">
+          <!-- Dynamically populated e.g. 1. e4 e5 -->
+        </div>
+        <div class="history-nav-toolbar" style="display: flex; gap: 6px; margin-top: 6px;">
+          <button id="btnNavStart" class="btn-control" style="padding: 4px 10px;" title="Starting Position">|◀</button>
+          <button id="btnNavPrev" class="btn-control" style="padding: 4px 10px;"
+            title="Previous Move (Left Arrow)">◀</button>
+          <button id="btnNavNext" class="btn-control" style="padding: 4px 10px;"
+            title="Next Move (Right Arrow)">▶</button>
+          <button id="btnNavEnd" class="btn-control" style="padding: 4px 10px;"
+            title="Current Live Position">▶|</button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Game Over Celebration Modal -->
+  <div id="gameOverModal" class="gameover-modal-backdrop">
+    <div class="gameover-dialog">
+      <div class="gameover-icon">🏆</div>
+      <div id="gameOverTitle" class="gameover-title">Checkmate!</div>
+      <div id="gameOverDesc" class="gameover-desc">White wins by checkmate.</div>
+      <div class="gameover-actions">
+        <button id="btnModalRematch" class="btn-primary" style="flex: 1;">⚡ Rematch / New Game</button>
+        <button id="btnModalClose" class="btn-control" style="flex: 1;">Review Board</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container"></div>
+
+  <!-- Core JavaScript Modules -->
+  <script src="js/pieces.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/qrcode.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/online.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
